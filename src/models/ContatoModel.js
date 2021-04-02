@@ -17,18 +17,14 @@ function Contato(body) {
   this.contato = null;
 }
 
-Contato.buscaPorId = (id) => {
-  if (typeof id !== 'string') return;
-  return ContatoModel.findById(id);
-}
 
 Contato.prototype.register = async function () {
   this.valida();
-
+  
   if (this.errors.length > 0) return;
-
+  
   this.contato = await ContatoModel.create(this.body);
-
+  
 };
 
 Contato.prototype.valida = function () {
@@ -42,7 +38,7 @@ Contato.prototype.valida = function () {
   if (!this.body.email && !this.body.telefone){
     this.errors.push('Pelomenos um contato precisa ser enviado: e-mail ou telefone.');
   } 
-
+  
 };
 
 Contato.prototype.cleanUp = function () {
@@ -51,7 +47,7 @@ Contato.prototype.cleanUp = function () {
       this.body[key] = '';
     }
   }
-
+  
   this.body = {
     nome: this.body.nome,
     sobrenome: this.body.sobrenome,
@@ -66,5 +62,22 @@ Contato.prototype.edit = async function (id) {
   if (this.errors.length > 0) return;
   
   this.contato = await ContatoModel.findByIdAndUpdate(id, this.body, { new: true });
+}
+
+//Métodos estáticos
+
+Contato.buscaPorId = (id) => {
+  if (typeof id !== 'string') return;
+  return ContatoModel.findById(id);
+}
+
+Contato.buscaContatos = () => {
+  return ContatoModel.find().sort({ criadoEm: -1});
+}
+
+Contato.delete = (id) => {
+  if (typeof id !== 'string') return;
+
+  return ContatoModel.findOneAndDelete({_id: id});
 }
 module.exports = Contato;

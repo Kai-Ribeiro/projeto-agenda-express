@@ -4,7 +4,7 @@ exports.index = (req, res) => {
   res.render('contato', {
     contato: {}
   });
-}
+};
 
 exports.register = async (req, res) => {
   try {
@@ -24,7 +24,7 @@ exports.register = async (req, res) => {
     console.log(e);
     return res.render('404');
   }
-}
+};
 
 exports.editIndex = async (req, res) => {
   if (!req.params.id) return res.render('404');
@@ -34,7 +34,7 @@ exports.editIndex = async (req, res) => {
   if (!contato) return res.render('404');
 
   res.render('contato', { contato });
-}
+};
 
 exports.edit = async (req, res) => {
   try {
@@ -57,5 +57,17 @@ exports.edit = async (req, res) => {
   } catch (e) {
     console.log(e);
     return res.render('404');
-}
-}
+  }
+};
+
+
+exports.delete = async (req, res) => {
+  if (!req.params.id) return res.render('404');
+
+  const contato = await Contato.delete(req.params.id);
+  if (!contato) return res.render('404');
+
+  req.flash('success', 'Contato apagado com sucesso.');
+  req.session.save(() => res.redirect('back'));
+  return;
+};
